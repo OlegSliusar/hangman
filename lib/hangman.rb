@@ -20,6 +20,13 @@ class Hangman
     puts "Tries: #{@tries}"
     puts "Length of word: #{@word_length}"
     puts "Letters used: #{@used_letters.join}"
+    print "\n\t"
+    @word.split('').each do |letter|
+      print "_" unless @used_letters.include?(letter)
+      print letter if @used_letters.include?(letter)
+      print " "
+    end
+    puts "\n\n"
   end
 end
 
