@@ -2,6 +2,7 @@ class Hangman
   def initialize
     puts "Welcome to Hangman!\n\n"
     @word = select_word
+    puts "the word is #{@word}\n\n"
     @word_length = @word.length
     @tries = 12
     @used_letters = ["a", "e", "i", "o", "u"]
@@ -51,12 +52,26 @@ class Hangman
     end
   end
 
+  def won_or_lose
+    if @tries == 0
+      puts "You didn't guess the word."
+      puts "The word was '#{@word}'"
+      return "lose"
+    elsif @word.downcase.split('') - @used_letters == []
+      display_feedback
+      puts "Congratulations!"
+      return "won"
+    end
+  end
+
   def interface
     begin
       display_feedback
       user_input = handle_user_input
-    end until user_input == "exit"
+      result = won_or_lose
+    end until user_input == "exit" || result == "lose" || result == "won"
   end
 end
 
+# Start the game
 new_game = Hangman.new
