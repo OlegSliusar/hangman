@@ -2,10 +2,11 @@ class Hangman
   def initialize
     puts "Welcome to Hangman!\n\n"
     @word = select_word
+    puts "the word is #{@word}\n\n"
     @word_length = @word.length
     @tries = 12
     @used_letters = ["a", "e", "i", "o", "u"]
-    display_feedback
+    interface
   end
 
   def select_word
@@ -27,6 +28,10 @@ class Hangman
       print " "
     end
     puts "\n\n"
+  end
+
+  def interface
+    display_feedback
   end
 end
 
