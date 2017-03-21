@@ -2,7 +2,6 @@ class Hangman
   def initialize
     puts "Welcome to Hangman!\n\n"
     @word = select_word
-    puts "the word is #{@word}\n\n"
     @word_length = @word.length
     @tries = 12
     @used_letters = ["a", "e", "i", "o", "u"]
@@ -18,20 +17,45 @@ class Hangman
   end
 
   def display_feedback
+    print "\n\n"
     puts "Tries: #{@tries}"
     puts "Length of word: #{@word_length}"
     puts "Letters used: #{@used_letters.join}"
     print "\n\t"
     @word.split('').each do |letter|
-      print "_" unless @used_letters.include?(letter)
-      print letter if @used_letters.include?(letter)
+      print "_" unless @used_letters.include?(letter.downcase)
+      print letter if @used_letters.include?(letter.downcase)
       print " "
     end
     puts "\n\n"
   end
 
+  def handle_user_input
+    puts "Enter your guess:"
+    print "> "
+    input = gets.strip.downcase
+    if input.length > 1
+      return input if input == "exit"
+      puts "Wrong input. Enter just one letter."
+    elsif input.to_i != 0 || input == "0"
+      puts "Wrong input. You can't enter digits."
+    elsif input =~ /\w/
+      if @word.downcase.include?(input) == false
+        @tries -= 1
+        @used_letters << input unless @used_letters.include?(input)
+      elsif @word.downcase.include?(input)
+        @used_letters << input unless @used_letters.include?(input)
+      end
+    else
+      puts "Wrong input."
+    end
+  end
+
   def interface
-    display_feedback
+    begin
+      display_feedback
+      user_input = handle_user_input
+    end until user_input == "exit"
   end
 end
 
