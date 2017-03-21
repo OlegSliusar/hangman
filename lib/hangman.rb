@@ -1,8 +1,9 @@
 class Hangman
+  attr_accessor :word, :word_length, :tries, :used_letters
+
   def initialize
-    puts "Welcome to Hangman!\n\n"
+    puts "Welcome to Hangman!"
     @word = select_word
-    puts "the word is #{@word}\n\n"
     @word_length = @word.length
     @tries = 12
     @used_letters = ["a", "e", "i", "o", "u"]
@@ -32,16 +33,25 @@ class Hangman
   end
 
   def handle_user_input
-    puts "Enter your guess:"
+    puts "Guess a letter:"
     print "> "
     input = gets.strip.downcase
     if input.length > 1
-      return input if input == "exit"
-      puts "Wrong input. Enter just one letter."
+      if input == "exit"
+        input
+      elsif input == "save"
+        save_game
+      elsif input == "restore"
+        restore_game
+      else
+        puts "Wrong input. Enter just one letter."
+      end
     elsif input.to_i != 0 || input == "0"
       puts "Wrong input. You can't enter digits."
     elsif input =~ /\w/
-      if @word.downcase.include?(input) == false
+      if @used_letters.include?(input)
+        puts "You've already guessed this letter!"
+      elsif @word.downcase.include?(input) == false
         @tries -= 1
         @used_letters << input unless @used_letters.include?(input)
       elsif @word.downcase.include?(input)
@@ -61,6 +71,28 @@ class Hangman
       display_feedback
       puts "Congratulations!"
       return "won"
+    end
+  end
+
+  def save_game
+    File.open('saved_game', 'w') do |file|
+      file.puts Marshal::dump(self)
+    end
+    puts "Your game is saved."
+  end
+
+  def restore_game
+    File.open('saved_game', 'r') do |file|
+      if file.eof?
+        puts "You don't have a saved game."
+      else
+        restored_game = Marshal::load(file)
+        self.word = restored_game.word
+        self.word_length = restored_game.word_length
+        self.tries = restored_game.tries
+        self.used_letters = restored_game.used_letters
+        puts "Your game is restored."
+      end
     end
   end
 
